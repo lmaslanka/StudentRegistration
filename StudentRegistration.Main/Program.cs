@@ -2,11 +2,13 @@
 {
     using System;
     using System.Collections.Generic;
+    using System.Linq;
     using System.Reflection;
 
     using NHibernate.Cfg;
     using NHibernate.Dialect;
     using NHibernate.Driver;
+    using NHibernate.Linq;
     using NHibernate.Mapping.ByCode;
     using NHibernate.Tool.hbm2ddl;
 
@@ -26,21 +28,23 @@
                     x.LogSqlInConsole = true;
                 });
 
-            cfg.AddAssembly(Assembly.GetExecutingAssembly());
+            //cfg.AddAssembly(Assembly.GetExecutingAssembly());
 
             var mapper = new ModelMapper();
-            mapper.AddMappings(new List<Type> { typeof(StudentMap) });
+            mapper.AddMappings(new List<Type> { typeof(StudentMap), typeof(CourseMap) });
             var mapping = mapper.CompileMappingForAllExplicitlyAddedEntities();
             cfg.AddDeserializedMapping(mapping, null);
 
-            //var schemaUpdate = new SchemaUpdate(cfg);
-            //schemaUpdate.Execute(Console.WriteLine, true);
+            var schemaUpdate = new SchemaUpdate(cfg);
+            schemaUpdate.Execute(Console.WriteLine, true);
 
             var sessionFactory = cfg.BuildSessionFactory();
             using(var session = sessionFactory.OpenSession())
             using (var tx = session.BeginTransaction())
             {
-                var students = session.CreateCriteria<Student>().List<Student>();
+                var students = from student in session.Query<Student>()
+                               orderby student.LastName
+                               select student;
 
                 foreach (var student in students)
                 {
