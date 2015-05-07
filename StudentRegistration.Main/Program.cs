@@ -3,7 +3,6 @@
     using System;
     using System.Collections.Generic;
     using System.Linq;
-    using System.Reflection;
 
     using NHibernate.Cfg;
     using NHibernate.Dialect;
@@ -27,8 +26,6 @@
                     x.Dialect<SQLiteDialect>();
                     x.LogSqlInConsole = true;
                 });
-
-            //cfg.AddAssembly(Assembly.GetExecutingAssembly());
 
             var mapper = new ModelMapper();
             mapper.AddMappings(new List<Type> { typeof(StudentMap), typeof(CourseMap) });
