@@ -28,7 +28,7 @@
                 });
 
             var mapper = new ModelMapper();
-            mapper.AddMappings(new List<Type> { typeof(StudentMap), typeof(CourseMap) });
+            mapper.AddMappings(new List<Type> { typeof(StudentMap), typeof(CourseMap), typeof(CourseStudentMap) });
             var mapping = mapper.CompileMappingForAllExplicitlyAddedEntities();
             cfg.AddDeserializedMapping(mapping, null);
 
